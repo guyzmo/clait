@@ -1,0 +1,60 @@
+invoices:
+    - invoice:
+        kind: paid
+        place: Babylon
+        date: 2014-10-02
+        subject: Voyage en dauphin
+        descr: Préparation et embarquation sur un dauphin à travers les mers
+        customer:
+            name: Zaphod Beeblebrox
+            address:
+                - Alpha du centaure
+        products:
+            product:
+                descr: Préparation du dauphin
+                quantity: 1
+                price: 300
+            product:
+                descr: Chevauchade du dauphin
+                quantity: 1
+                price: 430
+            product:
+                descr: Soutien psychologique du dauphin
+                quantity: 1
+                price: 430
+    - invoice:
+        kind: unpaid
+        date: 2014-10-31
+        place: Babylon
+        subject: Preparation d'une salade de cailloux
+        descr: Sélection et préparation des meilleurs cailloux en salade
+        customer:
+            name: Caillouland
+            address:
+                - 12 rue des rochers
+                - 75014 Paris
+        products:
+            product:
+                descr: Réalisation d'une salade de cailloux
+                quantity: 1
+                price: 201
+    - invoice:
+        kind: devis
+        date: 2015-03-25
+        place: Babylon
+        subject: Concert de musique silencieuse
+        descr: 
+        customer:
+            name: Milène Misourd
+            address:
+                - 12 rue de la cacophonie
+                - 75002 Paris
+        products:
+            product:
+                descr: Accordage d'un instrument invisible
+                quantity: 1
+                price: 30
+            product:
+                descr: Silence
+                quantity: 1
+                price: 70.75

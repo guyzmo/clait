@@ -1,0 +1,20 @@
+source:
+    name: Ford Prefect
+    address:
+        - Hyperspace bypass
+        - Earth
+    telephone: +44 777 7777 7777
+    website: http://mostly.harmless.com
+    email: ford.prefect@mostly.harmless.com
+    siren: 111 222 333
+    ape: 9602A
+    bank:
+        rib:
+            - 00001
+            - 00002
+            - 00000000001
+            - 42
+        iban: FR42 0000 1000 0200 0000 0000 142
+        bics: FOOBARFUBAR
+tools:
+    pdflatex: /usr/local/texlive/2014/bin/universal-darwin/pdflatex
