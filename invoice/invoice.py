@@ -9,6 +9,7 @@ Usage:
     invoice.py [--verbose] --config=<config> <invoices> results quarterly
     invoice.py [--verbose] --config=<config> <invoices> results yearly
     invoice.py [--verbose] --config=<config> <invoices> save
+    invoice.py [--verbose] --config=<config> <invoices> api
 
 Parameters:
     <invoices>          set list of invoices.
@@ -24,6 +25,7 @@ Commands:
     results quarterly   Calculate quarterly results.
     results yearly      Calculate yearly results.
     save                Save ...
+    api                 Launch restful API
 """
 
 import os
@@ -36,6 +38,9 @@ import tempfile
 import datetime
 import subprocess
 
+from json import JSONEncoder, dumps
+
+from .restful import build_api
 from .format import french as FORMAT
 
 ### Errors
@@ -65,9 +70,20 @@ class InvoiceError(InputError):
         super(InvoiceError, self).__init__(item, key, 'invoice', f)
 
 
-### Yaml output
+### Serialize
 
-class YamlObject(yaml.YAMLObject):
+def _default(self, obj):
+    if isinstance(obj, datetime.date):
+        serial = obj.isoformat()
+        return serial
+    if isinstance(obj, tuple):
+        t = "-".join(t)
+        return t
+    return getattr(obj.__class__, "to_json", _default.default)(obj)
+_default.default = JSONEncoder().default  # Save unmodified default.
+JSONEncoder.default = _default
+
+class Serializable(yaml.YAMLObject):
     yaml_hidden_fields = []
     yaml_flow_style = False
 
@@ -81,7 +97,14 @@ class YamlObject(yaml.YAMLObject):
                                             cls,
                                             flow_style=cls.yaml_flow_style)
 
-class Customer(YamlObject):
+    def to_json(self):
+        new_data = copy.deepcopy(self.__dict__)
+        for item in self.yaml_hidden_fields:
+            del new_data[item]
+        return new_data
+
+
+class Customer(Serializable):
     yaml_tag = u'!customer'
     def __init__(self, name, address):
         self.name = name
@@ -97,7 +120,7 @@ class Customer(YamlObject):
         return FORMAT.CUSTOMER.format(**formatting)
 
 
-class Product(YamlObject):
+class Product(Serializable):
     yaml_tag = u'!product'
     def __init__(self, descr, quantity, price):
         self.descr = descr
@@ -111,12 +134,12 @@ class Product(YamlObject):
         return FORMAT.PRODUCT.format(**self.__dict__)
 
 
-class Invoice(YamlObject):
+class Invoice(Serializable):
     yaml_tag = u'!invoice'
     yaml_hidden_fields = ['_header', '_footer']
     date_counter = {}
 
-    def __init__(self, kind, date, place, subject, descr, customer, products, header, footer):
+    def __init__(self, kind, date, place, subject, descr, customer, products, header=None, footer=None):
         self._header = header
         self._footer = footer
         self.kind = kind
@@ -174,23 +197,15 @@ class Accounting:
             except Exception as err:
                 raise ConfigurationError('source', err.args[0].split(': ')[1], c)
 
-    def load_invoices(self, f):
+
+    def load(self, f):
         self._invoice_file = f
-        invoices = []
         try:
-            idx = 0
             with open(f, 'r') as fin:
-                invoice_list = yaml.load(fin)
-                self.invoices = []
-                for i in invoice_list['invoices']:
-                    self.invoices.append(
-                        Invoice(
-                            header=self._header,
-                            footer=self._footer,
-                            **i['invoice']
-                        )
-                    )
-                    idx += 1
+                self.invoices = yaml.load(fin)
+                for invoice in self.invoices:
+                    invoice._header = self._header
+                    invoice._footer = self._footer
         except TypeError as err:
             raise InvoiceError(idx, err.args[0].split(': ')[1], f)
 
@@ -200,6 +215,12 @@ class Accounting:
     def save(self, fout='output.yaml'):
         with open(fout, 'w') as f:
             f.write(yaml.dump(self.invoices))
+
+    def get_invoice(self, invoice_id):
+        for invoice in self.invoices:
+            if invoice.iid == invoice_id:
+                return invoice
+        return None
 
     def generate_pdf(self):
         ret = False
@@ -245,7 +266,7 @@ class Accounting:
         quarters = {}
         for i in self.invoices:
             q = int((i.date.month-1)/3+1)
-            quarters[(i.date.year, q)] = quarters.get((i.date.year, q), 0) + i.get_total()
+            quarters.setdefault(i.date.year, {})[q] = quarters.get(i.date.year, {}).get(q, 0) + i.get_total()
         return quarters
 
     def calculate_yearly(self):
@@ -254,17 +275,23 @@ class Accounting:
             years[i.date.year] = years.get(i.date.year, 0) + i.get_total()
         return years
 
+    def calculate_monthly(self):
+        months = {}
+        for i in self.invoices:
+            months.setdefault(i.date.year, {})[i.date.month] = months.get(i.date.year, {}).get(i.date.month, 0) + i.get_total()
+        return months
+
+
 
 def cli():
     args = docopt.docopt(__doc__)
-    print(args)
     try:
         acct = Accounting(
             config=args['--config'],
             verbose=args['--verbose'],
             output=args['--output']
         )
-        acct.load_invoices(args['<invoices>'])
+        acct.load(args['<invoices>'])
 
         if args['generate']:
             if not acct.generate_pdf():
@@ -290,6 +317,10 @@ def cli():
 
         if args['save']:
             acct.save()
+
+        if args['api']:
+            build_api(acct, args)
+
     except InputError as ierr:
         print(ierr)
 

@@ -15,6 +15,9 @@ setup(name='pyinvoice',
       author_email='',
       install_requires=[
           'docopt',
+          'Flask',
+          'flask-restful',
+          'flask-bower',
       ],
       entry_points="""
       # -*- Entry points: -*-
