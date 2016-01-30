@@ -1,0 +1,26 @@
+          <div class="row"
+                class="check-section"
+                style="padding-top: 100px; margin: -100px 1px 0px 1px; padding-right: 0px; padding-left: 0px;"
+                id="Summary">
+            <div class="col-md-12">
+              <h3 class="sub-header">Summary</h3>
+              <table class="table table-hover table-condensed">
+                <thead>
+                  <th>Check</th>
+                  <th>Ref</th>
+                  <th>Domain</th>
+                  <th>Value</th>
+                  <th>Comment</th>
+                  <th></th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="i in invoices">
+                    <td>{{i.iid}}</td>
+                    <td>{{i.customer.name}}</td>
+                    <td>{{i.customer.name}}</td>
+                    <td><a role="button" class="btn btn-info btn-xs" href="{{fullUrl}}#{{c.id}}">go</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
