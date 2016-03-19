@@ -1,5 +1,42 @@
 
 angular.module('Invoicing')
+  .factory('ShowAlert', ['$alert', function($alert) {
+    return {
+      error: function (title, content) {
+        window.console.error(title+': '+content);
+        $alert({title: title,
+                content: content,
+                placement: 'top',
+                duration: 60,
+                keyboard: true,
+                container: '.main',
+                type: 'danger',
+                show: true});
+      },
+      success: function (title, content) {
+        $alert({title: title,
+                content: content,
+                placement: 'top',
+                duration: 20,
+                keyboard: true,
+                container: '.main',
+                type: 'success',
+                show: true});
+      },
+      info: function (title, content) {
+        $alert({title: title,
+                content: content,
+                duration: 20,
+                keyboard: true,
+                placement: 'top',
+                container: '.main',
+                type: 'info',
+                show: true});
+      }
+    };
+  }])
+
+angular.module('Invoicing')
 .controller('InvoiceListCtrl', ['$scope', 'Invoice',
     function($scope, Invoice){
         $scope.invoices = Invoice.query({sort: '[("iid", -1)]'});
@@ -20,13 +57,15 @@ angular.module('Invoicing')
               $scope.invoice = data;
           });
         };
-        $scope.loadInvoices();
+        $scope.add_product = function() {
+
+        }
     }])
 
 angular.module('Invoicing')
 .controller('ResultsCtrl', ['$scope', 'Results',
     function($scope, Results){
-      $scope.series = [''];
+        $scope.series = [''];
         $scope.yearly_labels = [''];
         $scope.quarterly_labels = [''];
         $scope.monthly_labels = [''];
