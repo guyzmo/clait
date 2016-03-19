@@ -75,22 +75,14 @@ angular.module('Invoicing')
             $scope.yearly_labels = Object.keys(data.yearly);
             $scope.yearly_data = [ Object.keys(data.yearly).map(x => data.yearly[x]) ];
 
-            // console.log($scope.yearly_labels);
-            // console.log($scope.yearly_data);
-
             $scope.monthly_labels = [].concat.apply([], Object.keys(data.monthly).map(y => Object.keys(data.monthly[y]).map(m => y+'-'+m) ));
             $scope.monthly_data = [ [].concat.apply([], Object.keys(data.monthly).map(y => Object.keys(data.monthly[y]).map(m => data.monthly[y][m]) )) ];
-
-            // console.log($scope.monthly_labels);
-            // console.log($scope.monthly_data);
 
             $scope.quarterly_labels = [].concat.apply([], Object.keys(data.quarterly).map(y => Object.keys(data.quarterly[y]).map(q => y+'-'+q) ));
             $scope.quarterly_data = [ [].concat.apply([], Object.keys(data.quarterly).map(y => Object.keys(data.quarterly[y]).map(q => data.quarterly[y][q]) )) ];
 
-            // console.log($scope.quarterly_labels);
-            // console.log($scope.quarterly_data);
-
-            // console.log($scope.results);
-            // window.results = $scope.results;
+            window.results = $scope.results;
         });
     }])
+
+
