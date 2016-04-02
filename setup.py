@@ -17,9 +17,8 @@ setup(name='pyinvoice',
           'docopt',
           'pyyaml',
           'Flask',
-          'Flask-Assets',
           'flask-restful',
-          'flask-bower',
+          'Flask-Webpack',
       ],
       entry_points="""
       # -*- Entry points: -*-
@@ -29,6 +28,5 @@ setup(name='pyinvoice',
       license='WTFPL',
       package_dir = {'':'src'},
       packages=find_packages(),
-      test_suite='nose.collector',
-      tests_require=['nose'],
-      zip_safe=False)
+      zip_safe=False
+)

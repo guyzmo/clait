@@ -1,27 +1,12 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Demo</title>
-</head>
-<body>
-  <h2>Test1</h2>
-    <div id='helloworld'>Hello world did not run</div>
-  <h2>Test2</h2>
-    <div id='app'>App did not run</div>
-  <h2>Test3</h2>
-    <div id='container'>Todo app did not run</div>
-
-
-{%- if config.get("ASSETS_DEBUG") -%}
-  <script src="{{ url_for("bower.serve", component="requirejs", filename="require.js") }}"></script>
-  <script src="{{ url_for("scripts", script_path="js/config.js") }}"></script>
-{%- else -%}
-  <script src="{{ url_for("bower.serve", component="jquery", filename="dist/jquery.js") }}"></script>
-  <script src="{{ url_for("bower.serve", component="almond", filename="almond.js") }}"></script>
-{%- endif -%}
-{%- assets "scripts/js/app.js" -%}
-  <script src="{{ ASSET_URL }}"></script>
-{%- endassets -%}
-</body>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Flask with WebPack</title>
+    {{ stylesheet_tag("app_css") | safe }}
+  </head>
+  <body>
+    <div id=root></div>
+    {{ javascript_tag("app_js") | safe }}
+  </body>
 </html>

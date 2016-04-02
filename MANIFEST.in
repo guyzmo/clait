@@ -1,0 +1,4 @@
+include src/manifest.json
+
+recursive-include src/templates *.html
+recursive-include src/assets *.scss *.js

@@ -2,6 +2,11 @@ node_modules
 dist
 .tmp
 .sass-cache
-bower_components
 var/
-output/
+bin/
+src/static/
+src/manifest.json
+__pycache__
+*.egg-info
+.ropeproject
+.installed.cfg
