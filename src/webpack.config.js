@@ -18,7 +18,10 @@ module.exports = {
             rootAssetPath + '/scripts/app.jsx'
         ],
         app_css: [
-            rootAssetPath + '/styles/main.scss'
+            rootAssetPath + '/styles/main.scss',
+            rootAssetPath + '/styles/css-loader.css',
+            rootAssetPath + '/styles/normalize.css',
+            rootAssetPath + '/styles/skeleton.css',
         ]
     },
     output: {
@@ -30,7 +33,13 @@ module.exports = {
     },
     resolve: {
         // Avoid having to require files with an extension if they are here.
-        extensions: ['', '.js', '.jsx', '.css']
+        extensions: ['', '.js', '.jsx', '.css'],
+        alias: {
+            // bind version of jquery-ui
+            'jquery-ui': 'jquery-ui/jquery-ui.js',
+            // bind to modules;
+            modules: path.join(__dirname, '..', 'node_modules'),
+        }
     },
     module: {
         // Various loaders to pre-process files of specific types.
@@ -38,8 +47,16 @@ module.exports = {
         //   https://github.com/jtangelder/sass-loader
         loaders: [
             {
-                test: /\.jsx?$/i,
-                loaders: ['react-hot-loader', 'babel?presets[]=react,presets[]=es2015'],
+                test: /\.jsx$/i,
+                loaders: [
+                'react-hot-loader',
+                'babel?presets[]=react'                                    +
+                     ',presets[]=es2015'                                   +
+                     ',presets[]=stage-1'                                  +
+                     ',plugins[]=transform-es3-member-expression-literals' +
+                     ',plugins[]=transform-es3-property-literals'          +
+                     ',plugins[]=transform-object-rest-spread'
+                ],
                 exclude: /node_modules/
             },
             {
@@ -60,8 +77,15 @@ module.exports = {
         ]
     },
     plugins: [
+        new webpack.HotModuleReplacementPlugin(),
         // Stop modules with syntax errors from being emitted.
         new webpack.NoErrorsPlugin(),
+        // Automatically loaded modules
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+        }),
         // Ensure CSS chunks get written to their own file.
         new ExtractTextPlugin('[name].[hash].css'),
         // Create the manifest file that Flask and other frameworks use.

@@ -12,6 +12,7 @@
     },
     paths: {
         jquery:         "src/static/scripts/js/vendors/jquery/dist/jquery.js",
+        jquery-ui:      "src/static/scripts/js/vendors/jquery-ui/jquery-ui.js",
         jsx:            "src/static/scripts/js/vendors/jsx-requirejs-plugin/js/jsx",
         JSXTransformer: "src/static/scripts/js/vendors/jsx-requirejs-plugin/js/JSXTransformer",
         text:           "src/static/scripts/js/vendors/requirejs-text/text",
