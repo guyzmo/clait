@@ -1,8 +1,59 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import HelloWorld from './HelloWorld';
 
-ReactDOM.render(<HelloWorld />, document.getElementById('root'));
+import { Router, Route, IndexRoute, IndexRedirect, Link } from 'react-router';
+import { Provider } from 'react-redux';
+
+import 'jquery';
+import 'jquery-ui';
+
+import { store, history/*, DevTools*/ } from './store'
+
+import InvoiceApp from './components/InvoiceApp';
+import InvoicePanel from './components/InvoicePanel';
+import InvoiceForm from './components/InvoiceForm';
+import StatPanel from './components/StatPanel';
+
+const About = () => {
+    return <div>
+        <h2>About</h2>
+        <Link to="/">Home</Link>
+    </div>
+}
+
+const NoMatch = () => {
+    return <div>
+        <h2>Path not found.</h2>
+        Your URL must be wrong, please head back to <Link to="/">Home</Link>!
+    </div>
+}
+
+const Dashboard = () => {
+    return <div>
+      <h2>Dashboard</h2>
+      <StatPanel />
+      <div><i>Work in Progress…</i></div>
+      <Link to="/">Get back home…</Link>
+    </div>
+}
+
+ReactDOM.render((
+    <Provider store={store}>
+      <div>
+        <Router history={history}>
+          <Route path="/" component={InvoiceApp}>
+            <IndexRedirect to="/invoices" />
+            <Route path="/invoices" component={InvoicePanel} />
+            <Route path="/invoices/:id" component={InvoiceForm} />
+
+            <Route path="/dashboard" component={Dashboard}/>
+            <Route path="/about" component={About}/>
+            <Route path="*" component={NoMatch}/>
+          </Route>
+        </Router>
+      </div>
+    </Provider>
+    ), document.getElementById('content'))
 
 function getCookie(name) {
     var cookieValue = null;
@@ -47,3 +98,9 @@ $.ajaxSetup({
         }
     }
 });
+
+// import HelloWorld from './HelloWorld';
+// import Counter from './Counter';
+
+// ReactDOM.render(<HelloWorld />, document.getElementById('test1'));
+// ReactDOM.render(<Counter />, document.getElementById('test2'));
