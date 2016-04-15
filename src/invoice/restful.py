@@ -22,6 +22,7 @@ import time
 from flask import Flask, request, render_template, make_response, send_from_directory
 from flask_restful import Resource, Api
 from flask_webpack import Webpack
+from flask.ext.cors import CORS, cross_origin
 
 from subprocess import Popen
 from glob import glob
@@ -90,6 +91,9 @@ def build_api(acct, args=None):
 
     Webpack(app)
     Template(app, 'src/templates')
+
+    # Enable CORS for the app
+    CORS(app, origins='*')
 
     api = Api(app)
 

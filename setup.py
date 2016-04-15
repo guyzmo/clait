@@ -19,6 +19,7 @@ setup(name='pyinvoice',
           'Flask',
           'flask-restful',
           'Flask-Webpack',
+          'Flask-cors',
       ],
       entry_points="""
       # -*- Entry points: -*-
