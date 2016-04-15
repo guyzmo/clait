@@ -18,6 +18,7 @@ Parameters:
 import os
 import sys
 import time
+import operator
 
 from flask import Flask, request, render_template, make_response, send_from_directory
 from flask_restful import Resource, Api
@@ -25,6 +26,7 @@ from flask_webpack import Webpack
 from flask.ext.cors import CORS, cross_origin
 
 from subprocess import Popen
+from functools import update_wrapper
 from glob import glob
 
 import jinja2
@@ -95,6 +97,16 @@ def build_api(acct, args=None):
 
     api = Api(app)
 
+    def parse_get_args(func):
+        def func_wrapper(*args, **kwarg):
+            kwarg['page'] = int(request.args.get('page', 0))
+            kwarg['per_page'] = int(request.args.get('per_page', -1))
+            kwarg['ordering'] = request.args.get('ordering', 'iid')
+            kwarg['search'] = request.args.get('search', None)
+            kwarg['format'] = request.args.get('format', None)
+            return func(*args, **kwarg)
+        return update_wrapper(func_wrapper, func)
+
     class AccountResults(Resource):
         def get(self):
             return {
@@ -104,13 +116,77 @@ def build_api(acct, args=None):
             }
 
 
+    class CustomerList(Resource):
+        keys = [
+            'name',
+            'address'
+        ]
+
+        @parse_get_args
+        def get(self, page, per_page, ordering, search, format):
+            customers = acct.customers.copy()
+
+            if search:
+                customers = filter(lambda x: search in x, customers)
+
+            if ordering:
+                reverse = False
+                if ordering.startswith('-'):
+                    ordering = ordering
+                    reverse = True
+                customers.sort(key=lambda x: getattr(x, ordering,
+                                                getattr(x, 'iid', '')),
+                              reverse=reverse)
+
+            if 0 > int(per_page):
+                return customers
+
+            return customers[per_page*page:per_page*(page+1)]
+
+
+    class Customer(Resource):
+        def get(self, customer_id, action='show'):
+            customer = acct.get_customer(customer_id)
+            if not customer:
+                raise Exception("Customer {} not found.".format(customer_id))
+            return customer
+
     class InvoiceList(Resource):
-        def get(self):
-            return acct.invoices
+        keys = [
+            'iid',
+            'kind',
+            'date',
+            'place',
+            'subject',
+            'description',
+            'customer',
+            'products'
+        ]
+
+        @parse_get_args
+        def get(self, page, per_page, ordering, search, format):
+
+            invoices = acct.invoices.copy()
+
+            if search:
+                invoices = filter(lambda x: search in x, invoices)
+
+            if ordering:
+                reverse = True
+                if ordering.startswith('-'):
+                    ordering = ordering
+                    reverse = False
+                invoices.sort(key=lambda x: getattr(x, ordering,
+                                                getattr(x, 'iid', '')),
+                              reverse=reverse)
+
+            if 0 > int(per_page):
+                return invoices
+
+            return invoices[per_page*page:per_page*(page+1)]
 
         def post(self):
-            args = parser.parse_args()
-            i = invoice.Invoice(**args)
+            i = invoice.Invoice(**request.form['data'])
             acct.append(i)
             acct.save()
             return i, 201
@@ -118,7 +194,6 @@ def build_api(acct, args=None):
 
     class Invoice(Resource):
         def get(self, invoice_id, action='show'):
-            print(invoice_id, action)
             if invoice_id.startswith("IV"):
                 invoice_id = invoice_id[2:]
             invoice = acct.get_invoice(invoice_id)
@@ -157,6 +232,10 @@ def build_api(acct, args=None):
     api.add_resource(Invoice,
                      '/invoices/<string:invoice_id>',
                      '/invoices/<string:invoice_id>/<string:action>')
+    api.add_resource(CustomerList, '/customers', )
+    api.add_resource(Customer,
+                     '/customers/<string:invoice_id>',
+                     '/customers/<string:invoice_id>/<string:action>')
 
     @app.route('/')
     def basic_pages(**kwargs):

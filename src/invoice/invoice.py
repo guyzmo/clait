@@ -216,6 +216,17 @@ class Accounting:
         with open(fout, 'w') as f:
             f.write(yaml.dump(self.invoices))
 
+    @property
+    def customers(self):
+        # create list of customers
+        return list(set(tuple(invoice['customer'].items()) for invoice in self.invoices))
+
+    def get_customer(self, customer_name):
+        for customer in self.customers:
+            if customer_name == customer.name:
+                return customer
+        return None
+
     def get_invoice(self, invoice_id):
         for invoice in self.invoices:
             if invoice.iid == invoice_id:
