@@ -101,6 +101,84 @@ const validate = values => {
 }
 
 
+
+////////////////////////////////////////////////////////////////////////////
+
+const total_value = (list) => list.reduce((acc, p) => (parseInt(p.qty.value||0)*parseFloat(p.price.value||0))+acc, 0)
+
+const productsForm = (product_list) => product_list.map((product, index) =>
+    <div className='row'>
+      <div className='two columns'>
+        <input type='text' className="u-full-width" {...product.price} />
+      </div>
+      <div className='two columns'>
+        <input type='text' className="u-full-width" {...product.qty} />
+      </div>
+      <div className='three columns'>
+        <input type='text' className="u-full-width" {...product.descr} />
+      </div>
+      <div className='five columns'>
+          <div>
+            <button type="button"
+                    disabled={index === 0}
+                    style={{fontSize:'1em'}}
+                    onClick={() => {
+                      product_list.swapFields(index, index - 1)  // swap field with it's predecessor
+                    }}>▲
+            </button>
+            <button type="button"
+                    disabled={index === product_list.length - 1}
+                    style={{fontSize:'1em'}}
+                    onClick={() => {
+                      product_list.swapFields(index, index + 1)  // swap field with it's successor
+                    }}>▼
+            </button>
+            <button className='button'
+                    style={{fontSize:'1em', backgroundColor: danger}}
+                    onClick={() => {
+                      product_list.removeField(index)
+                    }}>🚮
+            </button>
+          </div>
+      </div>
+    </div>
+  )
+
+const ProductListForm = (product_list) => <div>
+        <label>
+        Products
+        </label>
+        <div className='row'>
+          <div className='two columns'>
+            <label>Price</label>
+          </div>
+          <div className='two columns'>
+            <label>Quantity</label>
+          </div>
+          <div className='five columns'>
+            <label>Description</label>
+          </div>
+        </div>
+        {productsForm(product_list)}
+        <div className='row'>
+            <button className='button'
+                    style={{fontSize:'1em', backgroundColor: success}}
+                    onClick={() => {
+                      product_list.addField({ price: '0', qty: '1', descr: ''})}
+                    }>
+              <i/>+
+            </button>
+        </div>
+        <div className='row'>
+          <div className='one-half columns'>
+            <label>Total</label>
+            <input type="text" disabled value={total_value(product_list)} />
+          </div>
+        </div>
+      </div>
+
+////////////////////////////////////////////////////////////////////////////
+
 class InvoiceForm extends React.Component {
 
     render() {
@@ -118,104 +196,11 @@ class InvoiceForm extends React.Component {
         const { id } = this.props.params;
         const { isSubmitting } = this.props.ui;
         console.log('<InvoiceForm>:', this.props)
-        //const { categories, subcategories } = this.props.categories;
 
         const tsubmit = submit.bind(undefined,id);
         const dsubmit = del.bind(undefined,id, dispatch);
 
-        ////////////////////////////////////////////////////////////////////////////
-        const removeLine = (e) => {
-
-          e.stopPropagation()
-        }
-        const appendLine = (e) => {
-          ;
-          e.stopPropagation();
-        }
-        const total_value = products.reduce((acc, p) => (parseInt(p.qty.value||0)*parseFloat(p.price.value||0))+acc, 0)
-        const productsForm = products.map((product, index) =>
-            console.log('   productlistform', product.price, product.qty, product.descr) ||
-            <div className='row'>
-              <div className='two columns'>
-                <input type='text' className="u-full-width" {...product.price} />
-              </div>
-              <div className='two columns'>
-                <input type='text' className="u-full-width" {...product.qty} />
-              </div>
-              <div className='three columns'>
-                <input type='text' className="u-full-width" {...product.descr} />
-              </div>
-              <div className='five columns'>
-                  <div>
-                    <button type="button"
-                            disabled={index === 0}
-                            style={{fontSize:'1em'}}
-                            onClick={() => {
-                              products.swapFields(index, index - 1)  // swap field with it's predecessor
-                            }}>▲
-                    </button>
-                    <button type="button"
-                            disabled={index === products.length - 1}
-                            style={{fontSize:'1em'}}
-                            onClick={() => {
-                              products.swapFields(index, index + 1)  // swap field with it's successor
-                            }}>▼
-                    </button>
-                    <button className='button'
-                            style={{fontSize:'1em', backgroundColor: danger}}
-                            onClick={() => {
-                              products.removeField(index)
-                            }}>🚮
-                    </button>
-                  </div>
-              </div>
-            </div>
-          )
-        ////////////////////////////////////////////////////////////////////////////
-
-        const ProductListForm = <div>
-                <label>
-                Products
-                </label>
-                <div className='row'>
-                  <div className='two columns'>
-                    <label>Price</label>
-                  </div>
-                  <div className='two columns'>
-                    <label>Quantity</label>
-                  </div>
-                  <div className='five columns'>
-                    <label>Description</label>
-                  </div>
-                </div>
-                {productsForm}
-                <div className='row'>
-                    <button className='button'
-                            style={{fontSize:'1em', backgroundColor: success}}
-                            onClick={() => {
-                              products.addField({ price: '0', qty: '1', descr: ''})}
-                            }>
-                      <i/>+
-                    </button>
-                </div>
-                <div className='row'>
-                  <div className='one-half columns'>
-                    <label>Total</label>
-                    <input type="text" disabled
-                    value={total_value} />
-                  </div>
-                </div>
-              </div>
-
-        ////////////////////////////////////////////////////////////////////////////
-
         return <form onSubmit={handleSubmit(tsubmit)}>
-            <div className='row'>
-                <div className='ten columns'>
-                    <label forHtml={iid.name}>Invoice ID</label>
-                    <input type='text' className="u-full-width" {...iid} disabled />
-                </div>
-            </div>
             <div className='row'>
                 <div className='three columns'>
                     <DatePicker className="u-full-width" label='Invoice Date' field={date} />
@@ -250,7 +235,7 @@ class InvoiceForm extends React.Component {
             </div>
             <div className='row'>
 
-              {ProductListForm}
+              {ProductListForm(products)}
 
             </div>
             <button disabled={isSubmitting} className='button button-primary' onClick={handleSubmit(tsubmit)}>
