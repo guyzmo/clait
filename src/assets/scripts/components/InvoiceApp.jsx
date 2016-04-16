@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 
+import Breadcrumbs from 'react-breadcrumbs';
+
 import { loadInvoices } from '../actions/invoices'
 
 import NotificationContainer from './notification';
@@ -15,6 +17,8 @@ class App extends React.Component {
     render() {
         const { isLoading } = this.props.ui;
         return <div>
+            <Breadcrumbs routes={this.props.routes} params={this.props.params} />
+
             {this.props.children}
 
             <NotificationContainer />

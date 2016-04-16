@@ -41,14 +41,14 @@ ReactDOM.render((
     <Provider store={store}>
       <div>
         <Router history={history}>
-          <Route path="/" component={InvoiceApp}>
+          <Route name="Invoices" path="/" component={InvoiceApp}>
             <IndexRedirect to="/invoices" />
-            <Route path="/invoices" component={InvoicePanel} />
+            <Route name="List" path="/invoices" component={InvoicePanel} />
             <Route path="/invoices/:id" component={InvoiceForm} />
 
-            <Route path="/dashboard" component={Dashboard}/>
-            <Route path="/about" component={About}/>
-            <Route path="*" component={NoMatch}/>
+            <Route name="Dashboard" path="/dashboard" component={Dashboard}/>
+            <Route name="About" path="/about" component={About}/>
+            <Route name="404: Page not found" path="*" component={NoMatch}/>
           </Route>
         </Router>
       </div>
