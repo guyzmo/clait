@@ -1,9 +1,10 @@
 import React from 'react'
 
+import { bindActionCreators } from 'redux'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
-import { loadInvoices } from '../actions'
-import { bindActionCreators } from 'redux'
+
+import { loadInvoices } from '../actions/invoices'
 
 import NotificationContainer from './notification';
 import LoadingContainer from './loading';

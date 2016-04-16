@@ -1,15 +1,16 @@
 import React from 'react';
 import { Notification } from 'react-notification';
 import { connect } from 'react-redux'
-import { hideNotification } from '../actions'
+import { hideNotification } from '../actions/notifications'
 
 import * as colors from '../util/colors'
 
 const NotificationContainer = (props) => {
-    let { message, notification_type } = props.notification;
-    let { onHide } = props;
-    let isActive = message?true:false;
     let color;
+
+    const { message, notification_type } = props.notification;
+    const { onHide } = props;
+    const isActive = message?true:false;
 
     switch(notification_type) {
         case 'SUCCESS':

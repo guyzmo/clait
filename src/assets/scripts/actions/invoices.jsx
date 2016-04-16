@@ -1,5 +1,6 @@
-import { history } from  './store'
-import { formatUrl } from './util/formatters'
+import { history } from  '../store';
+import { formatUrl } from '../util/formatters';
+import { loadingChanged } from './ui';
 
 export function showInvoicesResult(jsonResult) {
     console.log('showInvoicesResult(): jsonResult=', jsonResult);
@@ -42,19 +43,11 @@ export function deleteInvoiceResult(id) {
     };
 }
 
-export function loadingChanged(isLoading) {
-    console.log('loadingChanged():', isLoading)
+export function changePage(page) {
+    console.log('changePage():', page)
     return {
-        type: "IS_LOADING",
-        isLoading
-    }
-}
-
-export function submittingChanged(isSubmitting) {
-    console.log('submittingChanged():', isSubmitting)
-    return {
-        type: "IS_SUBMITTING",
-        isSubmitting
+        type: "CHANGE_PAGE",
+        page
     }
 }
 
@@ -66,74 +59,6 @@ export function toggleSorting(sorting) {
     }
 }
 
-export function changePage(page) {
-    console.log('changePage():', page)
-    return {
-        type: "CHANGE_PAGE",
-        page
-    }
-}
-
-export function showSuccessNotification(message) {
-    console.log('showSuccessNotification():', message)
-    return {
-        type: 'SHOW_NOTIFICATION',
-        notification_type: 'SUCCESS',
-        message
-    }
-}
-
-export function showErrorNotification(message) {
-    console.log('showErrorNotification():', message)
-    return {
-        type: 'SHOW_NOTIFICATION',
-        notification_type: 'ERROR',
-        message
-    }
-}
-
-export function hideNotification() {
-    console.log('hideNotification()' )
-    return {
-        type: 'CLEAR_NOTIFICATION'
-    }
-}
-
-export function changeSearch(search) {
-    console.log('changeSearch():', search )
-    return {
-        type: 'CHANGE_SEARCH',
-        search
-    }
-}
-
-// export function loadInvoiceProducts(jsonResult) {
-//     console.log('loadInvoiceProducts():', jsonResult )
-//     const products = jsonResult.products;
-//     return (dispatch, getState) => {
-//       type: 'PRODUCT_LIST_LOAD',
-//       products
-//     }
-// }
-
-// export function addProductToInvoiceForm(line, products) {
-//     console.log('addProductToInvoiceForm():', line, products)
-//     // append a line in the product
-//     return (dispatch, getState) => {
-//       type: 'PRODUCT_LIST_PUSH',
-//       products
-//     }
-// }
-
-// export function delProductFromInvoiceForm(line) {
-//     console.log('delProductFromInvoiceForm():', line, products)
-//     return (dispatch, getState) => {
-//       type: 'PRODUCT_LINE_POP',
-//       line,
-//       products
-//     }
-// }
-
 export function changeSearchAndLoadInvoices(search) {
     console.log('changeSearchAndLoadInvoices():', search )
    return (dispatch, getState) => {
@@ -142,6 +67,14 @@ export function changeSearchAndLoadInvoices(search) {
             search: formatUrl(getState().invoices)
         } )
         dispatch(loadInvoices())
+    }
+}
+
+export function changeSearch(search) {
+    console.log('changeSearch():', search )
+    return {
+        type: 'CHANGE_SEARCH',
+        search
     }
 }
 

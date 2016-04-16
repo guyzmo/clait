@@ -1,53 +1,8 @@
 
-export const notification = (state={}, action) => {
-    switch (action.type) {
-        case 'SHOW_NOTIFICATION':
-            let { notification_type, message } = action
-            return Object.assign({}, state, {
-                message,
-                notification_type,
-            })
-        case 'CLEAR_NOTIFICATION':
-            return {}
-    }
-    return state;
-}
-
-
-export const ui = (state={}, action) => {
-    switch (action.type) {
-        case 'IS_LOADING':
-            return Object.assign({}, state, {
-                isLoading: action.isLoading
-            });
-            break;
-        case 'IS_SUBMITTING':
-            return Object.assign({}, state, {
-                isSubmitting: action.isSubmitting
-            });
-            break;
-    }
-    return state;
-}
-
 //http://stackoverflow.com/a/5158301/119071
 function getParameterByName(name) {
     var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.hash);
     return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-}
-
-const PATH_INITIAL = {
-  path: '/'
-}
-
-export const path = (state=PATH_INITIAL, action) => {
-    switch (action.type) {
-        case '@@router/LOCATION_CHANGE':
-            return Object.assign({}, state, {
-                path: action.
-            });
-    };
-    return state;
 }
 
 const INVOICES_INITIAL = {
@@ -59,14 +14,10 @@ const INVOICES_INITIAL = {
     invoice: {},
 }
 
-export const invoices = (state=INVOICES_INITIAL, action) => {
+const invoices = (state=INVOICES_INITIAL, action) => {
     console.log('reducers.invoices:', action.type, state, action);
     let idx = 0;
     switch (action.type) {
-        case 'LOCATION_CHANGE':
-            return Object.assign({}, state, {
-                path: 
-            });
         case 'SHOW_INVOICES':
             return Object.assign({}, state, {
                 rows: action.invoices,
@@ -141,3 +92,4 @@ export const invoices = (state=INVOICES_INITIAL, action) => {
     return state;
 }
 
+export default invoices;
