@@ -42,7 +42,7 @@ import subprocess
 from json import JSONEncoder, dumps
 
 from .restful import build_api
-from .format import french as FORMAT
+from .format import formatter
 
 ### Errors
 
@@ -71,6 +71,8 @@ class InvoiceError(InputError):
         super(InvoiceError, self).__init__(item, key, 'invoice', f)
 
 
+class ArgumentError(Exception): pass
+
 ### Serialize
 
 def _default(self, obj):
@@ -87,6 +89,8 @@ JSONEncoder.default = _default
 class Serializable(yaml.YAMLObject):
     yaml_hidden_fields = []
     yaml_flow_style = False
+
+    _template = None
 
     @classmethod
     def to_yaml(cls,dumper,data):
@@ -118,7 +122,7 @@ class Customer(Serializable):
         formatting = {}
         formatting.update(self.__dict__)
         formatting['address'] = "\\newline\n".join(formatting['address'])
-        return FORMAT.CUSTOMER.format(**formatting)
+        return self._template.CUSTOMER.format(**formatting)
 
 
 class Product(Serializable):
@@ -132,7 +136,7 @@ class Product(Serializable):
         return 'Product<{descr},{qty},{price}>'.format(**self.__dict__)
 
     def __str__(self):
-        return FORMAT.PRODUCT.format(**self.__dict__)
+        return self._template.PRODUCT.format(**self.__dict__)
 
 
 class Offer(Serializable):
@@ -146,17 +150,15 @@ class Offer(Serializable):
         return 'Offer<{descr},{qty},{price}>'.format(**self.__dict__)
 
     def __str__(self):
-        return FORMAT.OFFER.format(**self.__dict__)
+        return self._template.OFFER.format(**self.__dict__)
 
 
 class Invoice(Serializable):
     yaml_tag = u'!invoice'
-    yaml_hidden_fields = ['_header', '_footer']
+    # yaml_hidden_fields = ['_header', '_footer']
     date_counter = {}
 
-    def __init__(self, kind, date, place, subject, descr, customer, products, header=None, footer=None):
-        self._header = header
-        self._footer = footer
+    def __init__(self, kind, date, place, subject, descr, customer, products):
         self.kind = kind
         self.date = date
         self.place = place
@@ -181,10 +183,10 @@ class Invoice(Serializable):
         return total
 
     def __str__(self):
-        formatting = {}
+        formatting = {'HEADER': self._template.HEADER, 'FOOTER': self._template.FOOTER}
         formatting.update(self.__dict__)
         formatting['products'] = "\n".join([str(p) for p in formatting['products']])
-        return FORMAT.INVOICE.format(**formatting)
+        return self._template.INVOICE.format(**formatting)
 
 
 class Accounting:
@@ -192,11 +194,9 @@ class Accounting:
         self.invoices = []
         self._verbose = verbose
         self._output = output
-        self._header = FORMAT.HEADER
-        self._footer = FORMAT.FOOTER
         self.load_config(config)
 
-    def load_config(self, c):
+    def load_format(self):
         def format_from(config):
             formatting = {}
             formatting.update(config['source'])
@@ -205,22 +205,23 @@ class Accounting:
             formatting['bics'] = config['source']['bank']['bics']
             formatting['address'] = "\\newline\n".join(config['source']['address'])
             return formatting
+        template = formatter.load(self.config['format'])
+        try:
+            template.FOOTER = template.FOOTER.format(**format_from(self.config))
+        except Exception as err:
+            raise ConfigurationError('source', err.args[0].split(': ')[1], c)
+        Serializable._template = template
+
+    def load_config(self, c):
         with open(c, 'r') as fcf:
             self.config = yaml.load(fcf)
-            try:
-                self._footer = self._footer.format(**format_from(self.config))
-            except Exception as err:
-                raise ConfigurationError('source', err.args[0].split(': ')[1], c)
-
+            self.load_format()
 
     def load(self, f):
         self._invoice_file = f
         try:
             with open(f, 'r') as fin:
                 self.invoices = yaml.load(fin)
-                for invoice in self.invoices:
-                    invoice._header = self._header
-                    invoice._footer = self._footer
         except TypeError as err:
             raise InvoiceError(idx, err.args[0].split(': ')[1], f)
 
@@ -312,12 +313,18 @@ class Accounting:
 def cli():
     args = docopt.docopt(__doc__)
     try:
+        config_path = os.path.join(args['--directory'], args['--config'])
+        invoices_path = os.path.join(args['--directory'], args['--list'])
+
+        if not os.path.exists(config_path) and not os.path.exists(invoices_path):
+            raise ArgumentError('Please provide an existing configuration and invoices list files!')
+
         acct = Accounting(
-            config=args['--config'],
+            config=config_path,
             verbose=args['--verbose'],
-            output=args['--output']
+            output=args['--directory']
         )
-        acct.load(args['<invoices>'])
+        acct.load(invoices_path)
 
         if args['generate']:
             if not acct.generate_pdf():
@@ -332,8 +339,9 @@ def cli():
         if args['results'] and args['quarterly']:
             print("Quartely results:")
 
-            for quarter, value in sorted(acct.calculate_quarterly().items()):
-                print('', quarter[0], 'Q{}'.format(quarter[1]), value)
+            for year, qv in sorted(acct.calculate_quarterly().items()):
+                for quarter, value in sorted(qv.items()):
+                    print('', '{}-Q{}: {}'.format(year, quarter, value))
 
         if args['results'] and args['yearly']:
             print("Yearly results:")
@@ -349,6 +357,7 @@ def cli():
 
     except InputError as ierr:
         print(ierr)
+        print('See --help for more information.')
 
 
 def __main__(self):

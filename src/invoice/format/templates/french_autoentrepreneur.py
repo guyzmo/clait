@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
-INVOICE = """
-{_header}
+from ..formatter import register_template
+
+register_template('french_autoentrepreneur', dict(
+    INVOICE = """
+{HEADER}
 
 \def\FactureNum         {{{iid}}}
 \def\FactureAcquittee   {{{kind}}}
@@ -15,23 +18,23 @@ INVOICE = """
 
 {products}
 
-{_footer}
-"""
+{FOOTER}
+""",
 
-PRODUCT = """\
+    PRODUCT = """\
 \AjouterProduit {{{descr}}}        {{{qty}}}        {{{price}}}
-"""
+""",
 
-OFFER = """\
+    OFFER = """\
 \SoustraireProduit {{{descr}}}        {{{qty}}}        {{{price}}}
-"""
+""",
 
-CUSTOMER = """\
+    CUSTOMER = """\
 \def\ClientNom{{{name}}}
 \def\ClientAdresse{{{address}}}
-"""
+""",
 
-HEADER = r"""
+    HEADER = r"""
 \documentclass[french,11pt]{article}
 \usepackage{babel}
 \usepackage[utf8]{inputenc}
@@ -91,9 +94,9 @@ HEADER = r"""
    \expandafter#1%
    \expandafter{\tmp}%
 }
-"""
+""",
 
-FOOTER = r"""
+    FOOTER = r"""
 \geometry{{verbose,tmargin=4em,bmargin=8em,lmargin=6em,rmargin=6em}}
 \setlength{{\parindent}}{{0pt}}
 \setlength{{\parskip}}{{1ex plus 0.5ex minus 0.2ex}}
@@ -176,3 +179,4 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
 
 \end{{document}}
 """
+))
