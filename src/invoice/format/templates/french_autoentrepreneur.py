@@ -160,7 +160,7 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
 %~\\
 \vspace{{50mm}}
 
-\ifthenelse{{\equal{{\FactureAcquittee}}{{payed}}}}{{
+\ifthenelse{{\equal{{\FactureAcquittee}}{{paid}}}}{{
     Facture acquittée.
 }}{{
     Facture à régler, par chèque ou par virement bancaire :
