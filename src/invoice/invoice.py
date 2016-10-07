@@ -134,6 +134,20 @@ class Product(Serializable):
         return FORMAT.PRODUCT.format(**self.__dict__)
 
 
+class Offer(Serializable):
+    yaml_tag = u'!offer'
+    def __init__(self, descr, quantity, price):
+        self.descr = descr
+        self.qty = quantity
+        self.price = price
+
+    def __repr__(self):
+        return 'Offer<{descr},{qty},{price}>'.format(**self.__dict__)
+
+    def __str__(self):
+        return FORMAT.OFFER.format(**self.__dict__)
+
+
 class Invoice(Serializable):
     yaml_tag = u'!invoice'
     yaml_hidden_fields = ['_header', '_footer']

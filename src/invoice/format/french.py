@@ -22,6 +22,10 @@ PRODUCT = """\
 \AjouterProduit {{{descr}}}        {{{qty}}}        {{{price}}}
 """
 
+OFFER = """\
+\SoustraireProduit {{{descr}}}        {{{qty}}}        {{{price}}}
+"""
+
 CUSTOMER = """\
 \def\ClientNom{{{name}}}
 \def\ClientAdresse{{{address}}}
@@ -50,6 +54,16 @@ HEADER = r"""
 
     \eaddto\ListeProduits{#1    &    \prix    &    #2    &    \montant    \cr}
 }
+
+\newcommand{\SoustraireProduit}[3]{%    Arguments : Désignation, quantité, prix unitaire HT
+    \FPround{\prix}{#3}{2}
+    \FPeval{\montant}{#2 * #3}
+    \FPround{\montant}{\montant}{2}
+    \FPsub{\TotalHT}{\TotalHT}{\montant}
+
+    \eaddto\ListeProduits{#1    &    -\prix    &    #2    &    -\montant    \cr}
+}
+
 
 \newcommand{\AfficheResultat}{
     \ListeProduits
@@ -108,7 +122,7 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
 {name} \newline
 {address}
 
-\ifthenelse{{\equal{{\FactureAcquittee}}{{devis}}}}{{
+\ifthenelse{{\equal{{\FactureAcquittee}}{{quote}}}}{{
     Devis nº\FactureNum
 }}{{
     Facture nº\FactureNum
@@ -143,7 +157,7 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
 %~\\
 \vspace{{50mm}}
 
-\ifthenelse{{\equal{{\FactureAcquittee}}{{oui}}}}{{
+\ifthenelse{{\equal{{\FactureAcquittee}}{{payed}}}}{{
     Facture acquittée.
 }}{{
     Facture à régler, par chèque ou par virement bancaire :
