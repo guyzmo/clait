@@ -4,28 +4,29 @@
 generate invoices
 
 Usage:
-    invoice.py [--verbose] --config=<config> <invoices> print
-    invoice.py [--verbose] --config=<config> <invoices> generate [--output=<output>]
-    invoice.py [--verbose] --config=<config> <invoices> results quarterly
-    invoice.py [--verbose] --config=<config> <invoices> results yearly
-    invoice.py [--verbose] --config=<config> <invoices> save
-    invoice.py [--verbose] --config=<config> <invoices> api
+    invoice.py [options] print
+    invoice.py [options] generate
+    invoice.py [options] results quarterly
+    invoice.py [options] results yearly
+    invoice.py [options] save
+    invoice.py [options] api
 
-Parameters:
-    <invoices>          set list of invoices.
-    --config=<config>   Setup config file.
-    --output=<output>   Directory to generate the files to. [default: ./]
-    -v,--verbose        Set verbose output.
-    -h,--help           This message.
-    -V,--version        Show version.
+Arguments:
+    -l,--list=<invoices>   set list of invoices. [default: invoices_list.yaml]
+    -c,--config=<config>   Setup config file. [default: invoices_config.yaml]
+    -d,--directory=<dir>   Directory to generate the files to. [default: ./]
+    -v,--verbose           Set verbose output.
+    -h,--help              This message.
+    -V,--version           Show version.
 
 Commands:
-    print               Output a formalised list of invoices.
-    generate            Output all invoices as pdf.
-    results quarterly   Calculate quarterly results.
-    results yearly      Calculate yearly results.
-    save                Save ...
-    api                 Launch restful API
+    print                  Output a formalised list of invoices.
+    generate               Output all invoices as pdf.
+    results quarterly      Calculate quarterly results.
+    results yearly         Calculate yearly results.
+    save                   Save ...
+    api                    Launch restful API
+
 """
 
 import os
