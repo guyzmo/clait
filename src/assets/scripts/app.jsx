@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import 'jquery';
 import 'jquery-ui';
 
-import { store, history/*, DevTools*/ } from './store'
+import { store, history, DevTools } from './store'
 
 import InvoiceApp from './components/InvoiceApp';
 import InvoicePanel from './components/InvoicePanel';
@@ -99,8 +99,3 @@ $.ajaxSetup({
     }
 });
 
-// import HelloWorld from './HelloWorld';
-// import Counter from './Counter';
-
-// ReactDOM.render(<HelloWorld />, document.getElementById('test1'));
-// ReactDOM.render(<Counter />, document.getElementById('test2'));

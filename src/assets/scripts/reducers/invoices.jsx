@@ -26,6 +26,7 @@ const invoices = (state=INVOICES_INITIAL, action) => {
             break;
         case 'SHOW_INVOICE':
             return Object.assign({}, state, {
+                isDirty: false,
                 invoice: action.invoice
             });
             break;

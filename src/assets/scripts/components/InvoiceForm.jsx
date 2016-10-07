@@ -1,4 +1,9 @@
 import React from 'react';
+import Router from 'react-router';
+import { routeActions } from 'react-router-redux';
+import { reduxForm } from 'redux-form';
+
+// Importing actions
 
 import {
   loadInvoice,
@@ -13,12 +18,12 @@ import {
 import {
   submittingChanged
 } from '../actions/ui';
-import { reduxForm } from 'redux-form';
-import { routeActions } from 'react-router-redux';
+
+// Importing components
+
 import DatePicker from './DatePicker';
 import Input from './Input';
 import Select from './Select';
-//import ProductListForm from './ProductListForm';
 import { danger, success } from '../util/colors';
 
 const submit = (id, values, dispatch) => {
@@ -78,6 +83,11 @@ const validate = values => {
     const errors = {};
     if (!values.date) {
         errors.date = 'Required';
+    } else {
+        const re = /^\d{4}-\d{2}-\d{2}$/;
+        if(!re.exec(values.publish_date)) {
+            errors.publish_date = 'Invalid';
+        }
     }
     if (!values.subject) {
         errors.subject = 'Required';
@@ -89,13 +99,14 @@ const validate = values => {
         errors.place = 'Required';
     }
     if (!values.customer.name) {
-        errors.customer = 'Required';
+      if (!errors.customer)
+        errors.customer = {};
+      errors.customer.name = 'Required';
     }
-    if(values.date) {
-        const re = /^\d{4}-\d{2}-\d{2}$/;
-        if(!re.exec(values.publish_date)) {
-            errors.publish_date = 'Invalid';
-        }
+    if (!values.customer.address[0]) {
+      if (!errors.customer)
+        errors.customer = {};
+      errors.customer.address = ['Required'];
     }
     return errors;
 }
@@ -107,7 +118,7 @@ const validate = values => {
 const total_value = (list) => list.reduce((acc, p) => (parseInt(p.qty.value||0)*parseFloat(p.price.value||0))+acc, 0)
 
 const productsForm = (product_list) => product_list.map((product, index) =>
-    <div className='row'>
+    <div className='row' key={'products['+index+']'}>
       <div className='two columns'>
         <input type='text' className="u-full-width" {...product.price} />
       </div>
@@ -230,7 +241,7 @@ class InvoiceForm extends React.Component {
             <div className='row'>
                 <div className='ten columns'>
                   <label>Customer Address</label>
-                  { [0, 1, 2].map(idx => <input type='text' className="u-full-width" {...customer.address[idx]} />) }
+                  { [,,].map((_, idx) => <input key={'customer.address['+idx+']'} type='text' className="u-full-width" {...customer.address[idx]} />) }
                 </div>
             </div>
             <div className='row'>
@@ -248,20 +259,35 @@ class InvoiceForm extends React.Component {
     }
 
     componentDidMount() {
-        // if(this.props.categories.categories.length==0) {
-        //     this.props.dispatch(loadCategories());
-        // }
+      console.log('componentDidMount')
+      this.context.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this))
 
-        if (this.props.params.id) {
-            if(!this.props.invoice || this.props.invoice.id != this.props.params.id) {
-                this.props.dispatch(loadInvoice(this.props.params.id));
-            }
-        } else {
-            // New invoice
+      if (this.props.params.id) {
+        if(!this.props.invoice || this.props.invoice.id != this.props.params.id) {
+          this.props.dispatch(loadInvoice(this.props.params.id));
         }
+      } else {
+        // New invoice
+      }
     }
+
+    static contextTypes = {
+      router: React.PropTypes.object.isRequired
+    };
+
+    routerWillLeave(nextLocation) {
+      // return false to prevent a transition w/o prompting the user,
+      // or return a string to allow the user to decide:
+      console.log('routerWillLeave', this);
+      if (this.props.dirty)
+        return 'Your work is not saved! Are you sure you want to leave?'
+    }
+
 };
 
+// InvoiceForm.contextTypes = {
+//       router: React.PropTypes.func.isRequired,
+// }
 
 const mapStateToProps = (state, props) => {
     console.log('calling MSTP on invoiceform', state, props);
