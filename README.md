@@ -83,6 +83,28 @@ of the invoice. Then all the elements are as defined by the template.
     qty: 1
 ```
 
+## How to run?
+
+To generate all your invoices, in the `paperwork` directory:
+
+    pyinvoice -d paperwork generate
+
+If you want your tax calculation:
+
+    pyinvoice -d paperwork results quarterly
+    pyinvoice -d paperwork results yearly
+
+And finally, to launch the webapp, use 
+
+    pyinvoice -d paperwork api
+
+If you've made a change to an invoice and need to regenerate, just remove
+the pdf file!
 
 
+## How will it look like?
+
+here's a shot of one of the example invoices:
+
+![IV201410-001.pdf](https://github.com/guyzmo/pyinvoice/blob/master/examples/IV201410-001.pdf.png)
 
