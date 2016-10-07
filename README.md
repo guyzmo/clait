@@ -108,3 +108,9 @@ here's a shot of one of the example invoices:
 
 ![IV201410-001.pdf](https://github.com/guyzmo/pyinvoice/blob/master/examples/IV201410-001.pdf.png)
 
+## License
+
+This code is licensed under the GPLv3.
+
+
+
