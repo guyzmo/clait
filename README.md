@@ -1,4 +1,4 @@
-# PyInvoice
+# Clait
 
 A tool to generate nicely formatted and LaTeX generated invoices.
 
@@ -15,7 +15,7 @@ just run:
 
 you'll find the tool in:
 
-    bin/pyinvoice
+    bin/clait
 
 ## External dependency
 
@@ -87,16 +87,16 @@ of the invoice. Then all the elements are as defined by the template.
 
 To generate all your invoices, in the `paperwork` directory:
 
-    pyinvoice -d paperwork generate
+    clait -d paperwork generate
 
 If you want your tax calculation:
 
-    pyinvoice -d paperwork results quarterly
-    pyinvoice -d paperwork results yearly
+    clait -d paperwork results quarterly
+    clait -d paperwork results yearly
 
-And finally, to launch the webapp, use 
+And finally, to launch the webapp, use
 
-    pyinvoice -d paperwork api
+    clait -d paperwork api
 
 If you've made a change to an invoice and need to regenerate, just remove
 the pdf file!
@@ -106,7 +106,7 @@ the pdf file!
 
 here's a shot of one of the example invoices:
 
-![IV201410-001.pdf](https://github.com/guyzmo/pyinvoice/blob/master/examples/IV201410-001.pdf.png)
+![IV201410-001.pdf](https://github.com/guyzmo/clait/blob/master/examples/IV201410-001.pdf.png)
 
 ## License
 

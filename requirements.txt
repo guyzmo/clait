@@ -1,0 +1,6 @@
+docopt
+pyyaml
+Flask
+flask-restful
+Flask-Webpack
+Flask-cors

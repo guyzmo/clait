@@ -31,7 +31,7 @@ from glob import glob
 
 import jinja2
 
-import invoice
+from . import invoice
 
 
 def Template(app, path):
