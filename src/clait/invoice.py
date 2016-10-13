@@ -200,9 +200,11 @@ class Accounting:
         def format_from(config):
             formatting = {}
             formatting.update(config['source'])
-            formatting['rib'] = " & ".join([str(i) for i in config['source']['bank']['rib']])
-            formatting['iban'] = config['source']['bank']['iban']
-            formatting['bics'] = config['source']['bank']['bics']
+            for key, value in config['source']['bank'].items():
+                if isinstance(value, list):
+                    formatting['bank_{}'.format(key)] = " & ".join([str(i) for i in value])
+                else:
+                    formatting['bank_{}'.format(key)] = value
             formatting['address'] = "\\newline\n".join(config['source']['address'])
             return formatting
         template = formatter.load(self.config['format'])
@@ -286,6 +288,7 @@ class Accounting:
                         ret = True
                     else:
                         shutil.copy(flog_temp_path, self._output)
+                        shutil.copy(fin_temp_path, self._output)
                         print("‼️\nCheck log file: '{}'".format(flog_path))
         return ret
 

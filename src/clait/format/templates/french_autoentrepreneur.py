@@ -2,6 +2,20 @@
 
 from ..formatter import register_template
 
+'''
+source:
+    name:
+    address:
+    telephone:
+    website:
+    email:
+    siren:
+    ape:
+    bank_rib:
+    bank_iban:
+    bank_bics:
+'''
+
 register_template('french_autoentrepreneur', dict(
     INVOICE = """
 {HEADER}
@@ -168,9 +182,9 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
     \begin{{center}}
         \begin{{tabular}}{{|c c c c|}}
             \hline     \textbf{{Code banque}}    & \textbf{{Code guichet}}    & \textbf{{Nº de Compte}}        & \textbf{{Clé RIB}}    \\
-                    {rib}                \\
-            \hline     \textbf{{IBAN Nº}}        & \multicolumn{{3}}{{|l|}}{{ {iban} }}         \\
-            \hline     \textbf{{Code BIC}}       & \multicolumn{{3}}{{|l|}}{{ {bics} }}         \\
+                    {bank_rib}                \\
+            \hline     \textbf{{IBAN Nº}}        & \multicolumn{{3}}{{|l|}}{{ {bank_iban} }}         \\
+            \hline     \textbf{{Code BIC}}       & \multicolumn{{3}}{{|l|}}{{ {bank_bics} }}         \\
             \hline
         \end{{tabular}}
     \end{{center}}

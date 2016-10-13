@@ -2,6 +2,22 @@
 
 from ..formatter import register_template
 
+# expected configuration:
+
+'''
+source:
+    name:
+    address:
+    telephone:
+    website:
+    email:
+    siren:
+    ape:
+    bank_rib:
+    bank_iban:
+    bank_bics:
+'''
+
 register_template('french', dict(
     INVOICE = """
 {HEADER}
@@ -85,7 +101,9 @@ register_template('french', dict(
     %TVA \TVA~\%         & & &    \TotalTVA    \cr
     %\hline \hline
     \textbf{Total HT}    & & &    \TotalHT \cr
-    \textbf{Total TVA}    & & &    \TotalTVA \cr
+    \textbf{Total TVA}    & {\em (\TVA\%)} & &    \TotalTVA \cr
+    \hline
+    \textbf{Total TTC}    & & &    \TotalTTC \cr
 }
 
 \newcommand*\eaddto[2] {% version développée de \addto
@@ -168,9 +186,9 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
     \begin{{center}}
         \begin{{tabular}}{{|c c c c|}}
             \hline     \textbf{{Code banque}}    & \textbf{{Code guichet}}    & \textbf{{Nº de Compte}}        & \textbf{{Clé RIB}}    \\
-                    {rib}                \\
-            \hline     \textbf{{IBAN Nº}}        & \multicolumn{{3}}{{|l|}}{{ {iban} }}         \\
-            \hline     \textbf{{Code BIC}}       & \multicolumn{{3}}{{|l|}}{{ {bics} }}         \\
+                    {bank_rib}                \\
+            \hline     \textbf{{IBAN Nº}}        & \multicolumn{{3}}{{|l|}}{{ {bank_iban} }}         \\
+            \hline     \textbf{{Code BIC}}       & \multicolumn{{3}}{{|l|}}{{ {bank_bics} }}         \\
             \hline
         \end{{tabular}}
     \end{{center}}
