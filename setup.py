@@ -115,7 +115,7 @@ class PyTest(TestCommand):
             ('pytest-args=', 'a', "Extra arguments to pass into py.test"),
             ]
     default_options = [
-        '--cov=calenvite', '--cov-report', 'term-missing',
+        '--cov=clait', '--cov-report', 'term-missing',
         '--capture=sys', 'tests'
     ]
 
@@ -231,8 +231,8 @@ setup(name='clait',
       clait = clait.invoice:cli
       """,
       license='GPLv2',
-      package_dir = {'':'src'},
-      packages=find_packages(exclude=['tests']),
+      package_dir={'':'src'},
+      packages=find_packages('src'),
       test_suite='pytest',
       zip_safe=False
       )
