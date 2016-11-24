@@ -161,7 +161,7 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
 \textnormal{{\FactureDescr}}
 
 %~\\
-\vspace{{30mm}}
+\vspace{{\fill}}
 
 \begin{{center}}
     \begin{{tabular}}{{lrrr}}
@@ -172,7 +172,7 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
 \end{{center}}
 
 %~\\
-\vspace{{50mm}}
+\vspace{{\fill}}
 
 \ifthenelse{{\equal{{\FactureAcquittee}}{{paid}}}}{{
     Facture acquittée.
