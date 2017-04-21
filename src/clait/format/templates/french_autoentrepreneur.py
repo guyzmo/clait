@@ -177,7 +177,8 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
 \ifthenelse{{\equal{{\FactureAcquittee}}{{paid}}}}{{
     Facture acquittée.
 }}{{
-    Facture à régler, par chèque ou par virement bancaire :
+    Paiement à 60 jours suivant réception de la facture par chèque ou virement
+    bancaire aux coordonnées suivantes :
 
     \begin{{center}}
         \begin{{tabular}}{{|c c c c|}}
@@ -188,7 +189,11 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
             \hline
         \end{{tabular}}
     \end{{center}}
+    En cas de retard de paiement, une indemnité forfaitaire de compensation des
+    frais de recouvrement sera due en application des articles L. 441-6 et D.
+    441-5 du Code de Commerce.
 
+    Taux des pénalités en l’absence de paiement : 25\%
 }}
 
 \end{{document}}
