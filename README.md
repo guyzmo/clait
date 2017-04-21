@@ -33,6 +33,9 @@ and in `source` all the custom information for your billing.
 
 ```
 format: french
+prefix:
+  invoice: FA
+  quote: DV
 source:
     name: Ford Prefect
     address:
@@ -43,6 +46,7 @@ source:
     email: ford.prefect@mostly.harmless.com
     siren: 111 222 333
     ape: 9602A
+    payment_delay: 30 jours
     bank:
         rib:
             - 00001
