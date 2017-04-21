@@ -177,23 +177,37 @@ Dispensé d'immatriculation au registre du commerce et des sociétés et au rép
 \ifthenelse{{\equal{{\FactureAcquittee}}{{paid}}}}{{
     Facture acquittée.
 }}{{
-    Paiement à 60 jours suivant réception de la facture par chèque ou virement
-    bancaire aux coordonnées suivantes :
+    \ifthenelse{{\equal{{\FactureAcquittee}}{{quote}}}}{{
+        ~\\
+        ~\\
+        ~\\
+        ~\\
+        ~\\
+        ~\\
+        ~\\
+        ~\\
+        ~\\
+        ~\\
+        ~\\
+    }}{{
+        Paiement à {payment_delay} suivant réception de la facture par chèque ou virement
+        bancaire aux coordonnées suivantes :
 
-    \begin{{center}}
-        \begin{{tabular}}{{|c c c c|}}
-            \hline     \textbf{{Code banque}}    & \textbf{{Code guichet}}    & \textbf{{Nº de Compte}}        & \textbf{{Clé RIB}}    \\
-                    {bank_rib}                \\
-            \hline     \textbf{{IBAN Nº}}        & \multicolumn{{3}}{{|l|}}{{ {bank_iban} }}         \\
-            \hline     \textbf{{Code BIC}}       & \multicolumn{{3}}{{|l|}}{{ {bank_bics} }}         \\
-            \hline
-        \end{{tabular}}
-    \end{{center}}
-    En cas de retard de paiement, une indemnité forfaitaire de compensation des
-    frais de recouvrement sera due en application des articles L. 441-6 et D.
-    441-5 du Code de Commerce.
+        \begin{{center}}
+            \begin{{tabular}}{{|c c c c|}}
+                \hline     \textbf{{Code banque}}    & \textbf{{Code guichet}}    & \textbf{{Nº de Compte}}        & \textbf{{Clé RIB}}    \\
+                        {bank_rib}                \\
+                \hline     \textbf{{IBAN Nº}}        & \multicolumn{{3}}{{|l|}}{{ {bank_iban} }}         \\
+                \hline     \textbf{{Code BIC}}       & \multicolumn{{3}}{{|l|}}{{ {bank_bics} }}         \\
+                \hline
+            \end{{tabular}}
+        \end{{center}}
 
-    Taux des pénalités en l’absence de paiement : 25\%
+        En cas de retard de paiement, une indemnité forfaitaire de compensation des
+        frais de recouvrement sera due en application des articles L.441-6 et D.441-5 du Code de Commerce.
+
+        Taux des pénalités en l’absence de paiement : 25\%
+    }}
 }}
 
 \end{{document}}

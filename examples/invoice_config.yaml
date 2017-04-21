@@ -12,6 +12,7 @@ source:
     email: ford.prefect@mostly.harmless.com
     siren: 111 222 333
     ape: 9602A
+    payment_delay: 60 jours
     bank:
         rib:
             - 00001
