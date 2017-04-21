@@ -258,12 +258,18 @@ class Accounting:
             stderr=subprocess.DEVNULL
             interaction='batchmode'
             for invoice in self.invoices:
-                fin_path = os.path.join(self._output, 'IV{}.tex'.format(invoice.iid))
-                fout_path = os.path.join(self._output, 'IV{}.pdf'.format(invoice.iid))
-                flog_path = os.path.join(self._output, 'IV{}.log'.format(invoice.iid))
-                fin_temp_path = os.path.join(workdir, 'IV{}.tex'.format(invoice.iid))
-                fout_temp_path = os.path.join(workdir, 'IV{}.pdf'.format(invoice.iid))
-                flog_temp_path = os.path.join(workdir, 'IV{}.log'.format(invoice.iid))
+                iv_kind = 'invoice'
+                prefix_default = 'IV'
+                if invoice.kind == 'quote':
+                    iv_kind = 'quote'
+                    prefix_default = 'QU'
+                prefix = self.config.get('prefix', {}).get(iv_kind, prefix_default)
+                fin_path = os.path.join(self._output, '{}{}.tex'.format(prefix, invoice.iid))
+                fout_path = os.path.join(self._output, '{}{}.pdf'.format(prefix, invoice.iid))
+                flog_path = os.path.join(self._output, '{}{}.log'.format(prefix, invoice.iid))
+                fin_temp_path = os.path.join(workdir, '{}{}.tex'.format(prefix, invoice.iid))
+                fout_temp_path = os.path.join(workdir, '{}{}.pdf'.format(prefix, invoice.iid))
+                flog_temp_path = os.path.join(workdir, '{}{}.log'.format(prefix, invoice.iid))
                 if not os.path.exists(fout_path):
                     print("Generating invoice '{}': ".format(fout_path), end='')
                     sys.stdout.flush()

@@ -1,4 +1,7 @@
 config: french_autoentrepreneur
+prefix:
+    quote: DV
+    invioce: FA
 source:
     name: Ford Prefect
     address:
