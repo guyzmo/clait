@@ -6,6 +6,7 @@ generate invoices
 Usage:
     invoice.py [options] print
     invoice.py [options] generate
+    invoice.py [options] results monthly
     invoice.py [options] results quarterly
     invoice.py [options] results yearly
     invoice.py [options] save
@@ -344,6 +345,13 @@ def cli():
 
             for i in acct.invoices:
                 print(repr(i))
+
+        if args['results'] and args['monthly']:
+            print("Monthly results:")
+
+            for year, mv in sorted(acct.calculate_monthly().items()):
+                for month, value in sorted(mv.items()):
+                    print('', '{}-{}: {}'.format(year, month, value))
 
         if args['results'] and args['quarterly']:
             print("Quartely results:")
