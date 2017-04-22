@@ -6,16 +6,17 @@ A tool to generate nicely formatted and LaTeX generated invoices.
 
 just run:
 
-    python3 setup.py install
+    pip3 install .
 
 ## How to develop?
 
-    pip3 install zc.buildout
-    buildout
+    virtualenv var
+    var/bin/pip3 install -r requirements.txt
+    var/bin/pip3 install -e .
 
 you'll find the tool in:
 
-    bin/clait
+    var/bin/clait
 
 ## External dependency
 
