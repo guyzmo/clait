@@ -1,3 +1,6 @@
+> [!NOTE]
+> This project is now archived. It's been useful for a while, but sadly new regulation for electronics invoices will make this kind of projects non-relevant anymore.
+
 # Clait
 
 A tool to generate nicely formatted and LaTeX generated invoices.
